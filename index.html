@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Hub - CFAi Application Store</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            animation: fadeInDown 1s ease-out;
+        }
+
+        .header h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+            text-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            color: rgba(255,255,255,0.9);
+            font-weight: 300;
+            margin-bottom: 2rem;
+        }
+
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            border: 1px solid rgba(255,255,255,0.2);
+            color: #fff;
+            font-weight: 500;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: #4ade80;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+            animation: pulse 2s infinite;
+        }
+
+        /* Apps Grid */
+        .apps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .app-card {
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid rgba(255,255,255,0.2);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .app-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .app-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.15);
+        }
+
+        .app-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .app-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        .app-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+        }
+
+        .app-description {
+            color: #6b7280;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .app-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.875rem;
+            color: #9ca3af;
+        }
+
+        .app-status {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .status-online {
+            color: #059669;
+        }
+
+        .status-offline {
+            color: #dc2626;
+        }
+
+        .launch-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.875rem;
+        }
+
+        .launch-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            margin-top: 4rem;
+            padding: 2rem;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .footer p {
+            color: rgba(255,255,255,0.8);
+            font-size: 0.875rem;
+        }
+
+        /* Animations */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        .app-card {
+            animation: fadeInUp 0.6s ease-out;
+            animation-fill-mode: both;
+        }
+
+        .app-card:nth-child(1) { animation-delay: 0.1s; }
+        .app-card:nth-child(2) { animation-delay: 0.2s; }
+        .app-card:nth-child(3) { animation-delay: 0.3s; }
+        .app-card:nth-child(4) { animation-delay: 0.4s; }
+        .app-card:nth-child(5) { animation-delay: 0.5s; }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .header h1 {
+                font-size: 2.5rem;
+            }
+            
+            .apps-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            
+            .app-card {
+                padding: 1.5rem;
+            }
+        }
+
+        /* Loading States */
+        .loading {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+
+        .loading::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            margin: -10px 0 0 -10px;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1>The Hub</h1>
+            <p>Your centralized application store for CFAi tools and services</p>
+            <div class="status-indicator">
+                <div class="status-dot"></div>
+                <span>All Systems Operational</span>
+            </div>
+        </header>
+
+        <!-- Applications Grid -->
+        <main class="apps-grid">
+            <!-- CFAi App -->
+            <div class="app-card" data-app="cfai">
+                <div class="app-icon">
+                    <i class="fas fa-brain"></i>
+                </div>
+                <h3 class="app-title">CFAi</h3>
+                <p class="app-description">
+                    Advanced LLM multi-modal platform with custom model capabilities. 
+                    Access powerful AI tools for document analysis, content generation, and intelligent automation.
+                </p>
+                <div class="app-meta">
+                    <div class="app-status">
+                        <i class="fas fa-circle status-online"></i>
+                        <span>Online</span>
+                    </div>
+                    <button class="launch-btn" onclick="launchApp('cfai')">
+                        <i class="fas fa-rocket"></i> Launch
+                    </button>
+                </div>
+            </div>
+
+            <!-- Condor App -->
+            <div class="app-card" data-app="condor">
+                <div class="app-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <h3 class="app-title">Condor</h3>
+                <p class="app-description">
+                    Financial analysis and reporting platform. 
+                    Generate comprehensive reports, analyze market trends, and create data-driven insights.
+                </p>
+                <div class="app-meta">
+                    <div class="app-status">
+                        <i class="fas fa-circle status-online"></i>
+                        <span>Online</span>
+                    </div>
+                    <button class="launch-btn" onclick="launchApp('condor')">
+                        <i class="fas fa-rocket"></i> Launch
+                    </button>
+                </div>
+            </div>
+
+            <!-- Textraction App -->
+            <div class="app-card" data-app="textraction">
+                <div class="app-icon">
+                    <i class="fas fa-file-alt"></i>
+                </div>
+                <h3 class="app-title">Textraction</h3>
+                <p class="app-description">
+                    Intelligent document processing and text extraction tool. 
+                    Automatically extract, analyze, and organize information from various document formats.
+                </p>
+                <div class="app-meta">
+                    <div class="app-status">
+                        <i class="fas fa-circle status-online"></i>
+                        <span>Online</span>
+                    </div>
+                    <button class="launch-btn" onclick="launchApp('textraction')">
+                        <i class="fas fa-rocket"></i> Launch
+                    </button>
+                </div>
+            </div>
+
+            <!-- APIHub App -->
+            <div class="app-card" data-app="apihub">
+                <div class="app-icon">
+                    <i class="fas fa-code"></i>
+                </div>
+                <h3 class="app-title">CFAi APIHub</h3>
+                <p class="app-description">
+                    Centralized API management and integration platform. 
+                    Access, test, and manage all CFAi APIs through a unified interface.
+                </p>
+                <div class="app-meta">
+                    <div class="app-status">
+                        <i class="fas fa-circle status-online"></i>
+                        <span>Online</span>
+                    </div>
+                    <button class="launch-btn" onclick="launchApp('apihub')">
+                        <i class="fas fa-rocket"></i> Launch
+                    </button>
+                </div>
+            </div>
+
+            <!-- FFAi App -->
+            <div class="app-card" data-app="ffai">
+                <div class="app-icon">
+                    <i class="fas fa-fire"></i>
+                </div>
+                <h3 class="app-title">FFAi</h3>
+                <p class="app-description">
+                    Fast Financial AI processing platform. 
+                    High-speed financial data analysis and real-time market intelligence tools.
+                </p>
+                <div class="app-meta">
+                    <div class="app-status">
+                        <i class="fas fa-circle status-online"></i>
+                        <span>Online</span>
+                    </div>
+                    <button class="launch-btn" onclick="launchApp('ffai')">
+                        <i class="fas fa-rocket"></i> Launch
+                    </button>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>&copy; 2024 CFAi - CFA Innovation Department. All rights reserved.</p>
+            <p>Internal use only - Secure access required</p>
+        </footer>
+    </div>
+
+    <script>
+        // Application launch functionality
+        function launchApp(appName) {
+            const card = document.querySelector(`[data-app="${appName}"]`);
+            const button = card.querySelector('.launch-btn');
+            
+            // Add loading state
+            card.classList.add('loading');
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Launching...';
+            
+            // Simulate app launch (replace with actual implementation)
+            setTimeout(() => {
+                // Remove loading state
+                card.classList.remove('loading');
+                button.innerHTML = '<i class="fas fa-rocket"></i> Launch';
+                
+                // Show success message (replace with actual app launch)
+                showNotification(`Launching ${appName.toUpperCase()}...`, 'success');
+            }, 2000);
+        }
+
+        // Notification system
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: ${type === 'success' ? '#10b981' : '#3b82f6'};
+                color: white;
+                padding: 1rem 1.5rem;
+                border-radius: 12px;
+                box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+                z-index: 1000;
+                animation: slideInRight 0.3s ease-out;
+                font-weight: 500;
+            `;
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOutRight 0.3s ease-in';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 3000);
+        }
+
+        // Add CSS animations for notifications
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideInRight {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideOutRight {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Add hover effects for app cards
+        document.querySelectorAll('.app-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-8px) scale(1.02)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+
+        // System status check (simulated)
+        function checkSystemStatus() {
+            // Simulate system status check
+            const statusDot = document.querySelector('.status-dot');
+            const statusText = document.querySelector('.status-indicator span');
+            
+            // Random status changes for demo (remove in production)
+            setInterval(() => {
+                const isOnline = Math.random() > 0.1; // 90% uptime
+                statusDot.style.background = isOnline ? '#4ade80' : '#dc2626';
+                statusText.textContent = isOnline ? 'All Systems Operational' : 'System Maintenance';
+            }, 30000); // Check every 30 seconds
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            checkSystemStatus();
+        });
+    </script>
+</body>
+</html>
