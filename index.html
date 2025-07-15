@@ -73,12 +73,89 @@
             animation: shimmer 3s infinite;
         }
 
-        .header p {
-            font-size: 1.2rem;
-            color: rgba(255,255,255,0.8);
-            font-weight: 300;
+        .terminal-container {
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 1.5rem;
             margin-bottom: 2rem;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            box-shadow: 
+                0 10px 30px rgba(0,0,0,0.5),
+                inset 0 1px 0 rgba(255,255,255,0.1);
+        }
+
+        .terminal-header {
+            color: #00ff00;
+            margin-bottom: 1rem;
+            font-weight: bold;
+        }
+
+        .terminal-line {
+            margin-bottom: 0.5rem;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .terminal-line:nth-child(2) { animation-delay: 0.1s; }
+        .terminal-line:nth-child(3) { animation-delay: 0.2s; }
+        .terminal-line:nth-child(4) { animation-delay: 0.3s; }
+        .terminal-line:nth-child(5) { animation-delay: 0.4s; }
+        .terminal-line:nth-child(6) { animation-delay: 0.5s; }
+        .terminal-line:nth-child(7) { animation-delay: 0.6s; }
+        .terminal-line:nth-child(8) { animation-delay: 0.7s; }
+        .terminal-line:nth-child(9) { animation-delay: 0.8s; }
+
+        .terminal-prompt {
+            color: #00ff00;
+            font-weight: bold;
+        }
+
+        .terminal-command {
+            color: #ffffff;
+        }
+
+        .terminal-output {
+            color: #cccccc;
+        }
+
+        .terminal-success {
+            color: #00ff00;
+        }
+
+        .terminal-warning {
+            color: #ffff00;
+        }
+
+        .terminal-error {
+            color: #ff0000;
+        }
+
+        .terminal-info {
+            color: #00ffff;
+        }
+
+        .terminal-cursor {
+            display: inline-block;
+            width: 8px;
+            height: 16px;
+            background: #00ff00;
+            animation: blink 1s infinite;
+            margin-left: 2px;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .status-indicator {
@@ -390,10 +467,60 @@
         <!-- Header -->
         <header class="header">
             <h1>The Hub</h1>
-            <p>Your centralized application store for CFAi tools and services</p>
+            <div class="terminal-container">
+                <div class="terminal-header">CFAi Hub - System Health Monitor</div>
+                <div class="terminal-line">
+                    <span class="terminal-prompt">PS C:\CFAi\Hub></span>
+                    <span class="terminal-command"> Get-SystemHealth</span>
+                </div>
+                <div class="terminal-line terminal-output">
+                    Checking system status...
+                </div>
+                <div class="terminal-line terminal-success">
+                    ✓ Server Status: ONLINE
+                </div>
+                <div class="terminal-line terminal-success">
+                    ✓ Database Connection: ACTIVE
+                </div>
+                <div class="terminal-line terminal-success">
+                    ✓ Authentication Service: RUNNING
+                </div>
+                <div class="terminal-line terminal-info">
+                    System Uptime: 14 days, 6 hours, 23 minutes
+                </div>
+                <div class="terminal-line">
+                    <span class="terminal-prompt">PS C:\CFAi\Hub></span>
+                    <span class="terminal-command"> Get-AppStatus</span>
+                </div>
+                <div class="terminal-line terminal-output">
+                    Scanning application health...
+                </div>
+                <div class="terminal-line terminal-success">
+                    ✓ CFAi: ONLINE (v2.1.4)
+                </div>
+                <div class="terminal-line terminal-success">
+                    ✓ Condor: ONLINE (v1.8.2)
+                </div>
+                <div class="terminal-line terminal-success">
+                    ✓ Textraction: ONLINE (v3.0.1)
+                </div>
+                <div class="terminal-line terminal-success">
+                    ✓ APIHub: ONLINE (v1.5.7)
+                </div>
+                <div class="terminal-line terminal-success">
+                    ✓ FFAi: ONLINE (v2.0.3)
+                </div>
+                <div class="terminal-line terminal-info">
+                    All applications operational. Ready for deployment.
+                </div>
+                <div class="terminal-line">
+                    <span class="terminal-prompt">PS C:\CFAi\Hub></span>
+                    <span class="terminal-cursor"></span>
+                </div>
+            </div>
             <div class="status-indicator">
                 <div class="status-dot"></div>
-                <span>All Systems Operational</span>
+                <span>Logged in as: Doug Richards</span>
             </div>
         </header>
 
@@ -587,23 +714,42 @@
             });
         });
 
+        // Terminal functionality
+        function updateTerminal() {
+            const terminalContainer = document.querySelector('.terminal-container');
+            const cursor = terminalContainer.querySelector('.terminal-cursor');
+            
+            // Simulate real-time updates
+            setInterval(() => {
+                const now = new Date();
+                const uptime = Math.floor(Math.random() * 30) + 10; // Random uptime between 10-40 days
+                const hours = Math.floor(Math.random() * 24);
+                const minutes = Math.floor(Math.random() * 60);
+                
+                const uptimeLine = terminalContainer.querySelector('.terminal-info');
+                if (uptimeLine && uptimeLine.textContent.includes('System Uptime')) {
+                    uptimeLine.textContent = `System Uptime: ${uptime} days, ${hours} hours, ${minutes} minutes`;
+                }
+            }, 60000); // Update every minute
+        }
+
         // System status check (simulated)
         function checkSystemStatus() {
-            // Simulate system status check
             const statusDot = document.querySelector('.status-dot');
             const statusText = document.querySelector('.status-indicator span');
             
-            // Random status changes for demo (remove in production)
+            // Simulate occasional status changes
             setInterval(() => {
-                const isOnline = Math.random() > 0.1; // 90% uptime
+                const isOnline = Math.random() > 0.05; // 95% uptime
                 statusDot.style.background = isOnline ? '#4ade80' : '#dc2626';
-                statusText.textContent = isOnline ? 'All Systems Operational' : 'System Maintenance';
-            }, 30000); // Check every 30 seconds
+                statusText.textContent = isOnline ? 'Logged in as: Doug Richards' : 'System Maintenance - Standby';
+            }, 45000); // Check every 45 seconds
         }
 
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
             checkSystemStatus();
+            updateTerminal();
         });
     </script>
 </body>
