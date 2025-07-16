@@ -231,4 +231,7 @@ This is an internal CFA project. For questions or issues:
 ---
 
 **© 2025 Cooperative Finance Association**  
-*Internal use only. FORBIDDEN to share with external parties.* 
+*Internal use only. FORBIDDEN to share with external parties.*
+
+---
+*Last updated: January 2025* 
